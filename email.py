@@ -9,6 +9,9 @@ import schedule
 import time
 import yagmail
 # print(schedule.__version__)
+import streamlit as st
+
+
 # 连接服务器
 # 用户名、授权码、服务器地址
 yag_server = yagmail.SMTP(user='fszxpan@126.com', password='zxP200206822', host='smtp.126.com')
@@ -37,3 +40,4 @@ schedule.every().day.at("21:30").do(sendemail)
 while True:
     schedule.run_pending()
     time.sleep(1)
+    st.write('OK')
