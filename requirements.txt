@@ -4,4 +4,5 @@ akshare==1.11.97
 requests==2.31.0
 xgboost==2.0.2
 yagmail==0.15.293
+schedule==1.2.1
 
