@@ -5,7 +5,7 @@ Created on Sat May 18 20:00:54 2024
 @author: pan
 """
 
-import schedule
+
 import time
 import yagmail
 # print(schedule.__version__)
@@ -33,11 +33,5 @@ def sendemail():
     yag_server.close()
 
 
-
-# 每周一早上8点执行报表生成任务
-schedule.every().day.at("21:25").do(sendemail)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1000)
-    st.write('OK')
+if st.button('发发发', key='datab1'):
+    sendemail()
