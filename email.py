@@ -32,7 +32,7 @@ def sendemail():
 
 
 # 每周一早上8点执行报表生成任务
-schedule.every().day.at("22:00").do(sendemail)
+schedule.every().day.at("21:30").do(sendemail)
 
 while True:
     schedule.run_pending()
