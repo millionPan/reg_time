@@ -70,6 +70,9 @@ def predicttf(symbol,startdate,enddate,model_enddate,trainr):
         historydata['MA5'] = historydata['topen'].rolling(window=5).mean()-historydata['topen']
         historydata['MA8'] = historydata['topen'].rolling(window=8).mean()-historydata['topen']
         
+        historydata['d_oMA5'] = historydata['topen']-historydata['MA5']#diff_open_MA5
+        
+        
         historydata['MA25_diff']=historydata['MA2']-historydata['MA5']
         historydata['MA58_diff']=historydata['MA5']-historydata['MA8']
         
@@ -112,7 +115,7 @@ def predicttf(symbol,startdate,enddate,model_enddate,trainr):
         
         
         #close(t+1),'涨跌幅'
-        xlist_four=(['振幅','换手率','oo','oc','co','cc','hh','hl','lh','ll','MA25_diff','MA58_diff',
+        xlist_four=(['振幅','换手率','oo','oc','co','cc','hh','hl','lh','ll','MA25_diff','MA58_diff','d_oMA5',
         '振幅_l','换手率_l','oo_l','oc_l','co_l','cc_l','hh_l','hl_l','lh_l','ll_l'])#变量列
         xlist_five=['tco','lco','振幅','换手率','updiff','downdiff','hh','ll',
                     'tco_l','lco_l','振幅_l','换手率_l','updiff_l','downdiff_l','hh_l','ll_l']
@@ -123,7 +126,7 @@ def predicttf(symbol,startdate,enddate,model_enddate,trainr):
             'booster':'gbtree',
             'objective':'binary:logistic',  # binary:logistic此处为回归预测，这里如果改成multi:softmax 则可以进行多分类
             'gamma':0.1,
-            'max_depth':7,
+            'max_depth':8,
             'lambda':8,
             'subsample':trainr,
             'colsample_bytree':trainr,

@@ -20,6 +20,9 @@ import pandas as pd
 import time
 # import os
 # os.chdir('d:/reg_time/reg_time')
+import xgbdata
+import etf_xgbdata 
+
 
 import smtplib
 from email.mime.text import MIMEText
@@ -32,8 +35,6 @@ st.set_page_config(
     layout="wide",                #页面布局
     initial_sidebar_state="auto"  #侧边栏
 )
-import xgbdata
-import etf_xgbdata 
 
 #行业
 @st.cache_data
@@ -56,7 +57,7 @@ if st.button('发发发', key='datab1'):
                 ]
 
 
-    #enddate='20240520'
+    #enddate='20240523'
     t_today=datetime.date.today()
     enddate=t_today.strftime("%Y%m%d")
     
@@ -110,7 +111,7 @@ if st.button('发发发', key='datab1'):
     #               )
     predictdata_show=(predictdata[['symbol_fo','name','tmr_sm','pred_sm','tpr','tnr','acc','avg_range','industry','acc_fo','tpr_fo','tnr_fo','n_pred_fo','acc_fi','tpr_fi','tnr_fi','n_pred_fi']]
                  .sort_values(by=['pred_sm'],ascending=False))
-    
+    #predictdata_show.to_excel("d:/predict"+t_today.strftime("%Y%m%d")+".xlsx")
     predictdata_email=(predictdata[['symbol_fo','name','tmr_sm','pred_sm','tpr','tnr','acc','avg_range','industry']]
                  .sort_values(by=['pred_sm'],ascending=False))
     
