@@ -23,8 +23,8 @@ def predicttf(symbol,startdate,enddate,model_enddate,trainr):
         # symbol='513910'
         # print('444-----------')
         # startdate='20230101'
-        # enddate='20240509'
-        # model_enddate='20240508'
+        # enddate='20240524'
+        # model_enddate='20240523'
         # trainr=0.8
         if (str(symbol)[0]=="5")|(str(symbol)[0]=="1"):
             historydata = ak.fund_etf_hist_em(symbol=symbol, period="daily", start_date=startdate, end_date=enddate, adjust="")
@@ -90,6 +90,12 @@ def predicttf(symbol,startdate,enddate,model_enddate,trainr):
         historydata["tco_l"]=historydata["tco"].shift(1)#/historydata['topen']#今收-今开
         historydata["lco_l"]=historydata["lco"].shift(1)#/historydata['lclose']#昨收-昨开
         
+        #666---
+        historydata["k_up"]=historydata.apply(lambda x :(x['thigh']-max(x['topen'],x['tclose']))/x['topen'],axis=1)#最高价与上线差
+        historydata["k_down"]=historydata.apply(lambda x :(min(x['topen'],x['tclose'])-x['tlow'])/x['topen'],axis=1)#下线与最低价差
+        
+        historydata["k_down_l"]=historydata["k_down"].shift(1)#昨日
+        historydata["k_up_l"]=historydata["k_up"].shift(1)#昨日
         
         historydata["date"] = pd.to_datetime(historydata["日期"])
         historydata.set_index("date", inplace=True, drop=True) # 把index设为索引
@@ -115,12 +121,16 @@ def predicttf(symbol,startdate,enddate,model_enddate,trainr):
         
         
         #close(t+1),'涨跌幅'
-        xlist_four=(['振幅','换手率','oo','oc','co','cc','hh','hl','lh','ll','MA25_diff','MA58_diff','d_oMA5',
-        '振幅_l','换手率_l','oo_l','oc_l','co_l','cc_l','hh_l','hl_l','lh_l','ll_l'])#变量列
-        xlist_five=['tco','lco','振幅','换手率','updiff','downdiff','hh','ll',
-                    'tco_l','lco_l','振幅_l','换手率_l','updiff_l','downdiff_l','hh_l','ll_l']
-        xlist=[xlist_four,xlist_five]
+        xlist_four=(['振幅','换手率','oo','oc','co','cc','hh','hl','lh','ll','MA58_diff','d_oMA5'#]
+         ,'振幅_l','换手率_l','oo_l','oc_l','co_l','cc_l','hh_l','hl_l','lh_l','ll_l'#])
+          ,'tco','lco','updiff','downdiff',
+                      'tco_l','lco_l','updiff_l','downdiff_l',
+                      'k_up','k_down','k_up_l','k_down_l'
+                      ])#变量列
         
+        xlist=[xlist_four]
+        
+        # len(xlist_five)
         #444--
         params_four = {
             'booster':'gbtree',
@@ -137,21 +147,8 @@ def predicttf(symbol,startdate,enddate,model_enddate,trainr):
             'nthread':4,
         }
         
-        params_five = {
-            'booster':'gbtree',
-            'objective':'binary:logistic',  # binary:logistic此处为回归预测，这里如果改成multi:softmax 则可以进行多分类
-            'gamma':0.1,
-            'max_depth':4,
-            'lambda':8,
-            'subsample':trainr,
-            'colsample_bytree':trainr,
-            'min_child_weight':3,
-            'verbosity':1,
-            'eta':0.1,
-            'seed':1000,
-            'nthread':4,}
-        
-        paramslist=[params_four,params_five]
+    
+        paramslist=[params_four]
         
         xgbsdata=pd.DataFrame()
         for model in range(len(paramslist)): 
